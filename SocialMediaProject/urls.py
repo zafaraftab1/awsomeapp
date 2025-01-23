@@ -23,7 +23,7 @@ from SocialMedia import views
 from SocialMedia.views import *
 
 urlpatterns = [
-    #    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
 
     path('',include('SocialMedia.urls')),
 ]
