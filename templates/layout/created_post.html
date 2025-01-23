@@ -11,27 +11,9 @@
     </div>
 
     <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>
-        <label>Current Image:</label>
-        {% if posts.image %}
-            <img src="{{ posts.image.url }}" alt="Current Image" style="max-width: 200px; max-height: 200px;">
-        {% else %}
-            <span>No image uploaded yet.</span>
-        {% endif %}
-    </p>
-    <p>
-        <label for="id_image">Upload Image:</label>
-        <input type="file" name="image" id="id_image" accept="image/*" required>
-    </p>
-    <p>
-        <label for="id_title">Title:</label>
-        <input type="text" name="title" id="id_title" required>
-    </p>
-    <p>
-        <label for="id_artist">Body:</label>
-        <input type="text" name="artist" id="id_artist" required>
-    </p>
+        {% csrf_token %}
+        {{ form.as_p }}
+
     <button type="submit" class="mt-1">Submit Post</button>
     <a class="button secondaryAction ml-1" href="">Cancel</a>
 </form>
