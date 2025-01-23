@@ -22,11 +22,14 @@ import SocialMedia
 from SocialMedia import views, admin
 from SocialMedia.views import *
 from django.contrib import admin
+from django.conf.urls.static import static
 
-
+from SocialMediaProject import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('',include('SocialMedia.urls')),
 ]
+
+urlpatterns=urlpatterns+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

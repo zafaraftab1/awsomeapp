@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 class Post_models(models.Model):
     title = models.CharField(max_length=120)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='SocialMediaCategory/')
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     id = models.CharField(max_length=120,default=uuid.uuid4,editable=False,unique=True,primary_key=True)
