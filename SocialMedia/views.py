@@ -32,3 +32,11 @@ def postCreated(request):
             post = form.save()
             return redirect('home')
     return render(request, 'layout/created_post.html', {'form': form})
+
+def postDelete(request,pk):
+    post = Post_models.objects.get(id=pk)
+    if request.method == 'POST':
+        post.delete()
+        return redirect('home')
+    return render(request, 'layout/post_delete.html',{'post': post})
+    #post = Post_models.objects.get(pk=pk)
