@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect
 from django import forms
 from SocialMedia.models import *
 from django.forms import ModelForm
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -37,6 +38,7 @@ def postDelete(request,pk):
     post = Post_models.objects.get(id=pk)
     if request.method == 'POST':
         post.delete()
+        messages.success(request, 'Post deleted successfully')
         return redirect('home')
     return render(request, 'layout/post_delete.html',{'post': post})
     #post = Post_models.objects.get(pk=pk)
