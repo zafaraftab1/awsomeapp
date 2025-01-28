@@ -14,4 +14,4 @@ class Post_models(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['-created']
+       ordering = ['-created']

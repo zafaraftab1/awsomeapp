@@ -42,3 +42,7 @@ def postDelete(request,pk):
         return redirect('home')
     return render(request, 'layout/post_delete.html',{'post': post})
     #post = Post_models.objects.get(pk=pk)
+
+def postEdit(request,pk):
+    post = Post_models.objects.get(id=pk)
+    return render(request, 'layout/post_edit.html', {'post': post})
