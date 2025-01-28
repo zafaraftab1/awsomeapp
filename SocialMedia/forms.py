@@ -16,3 +16,14 @@ class PostCreateForm(ModelForm):
                 'class': 'font1 text-4xl',
             }),
         }
+
+class PostEditForm(ModelForm):
+    class Meta:
+        model = Post_models
+        fields = '__all__'
+        labels = {
+            'body': '',
+        }
+        widgets = {
+            'body': forms.Textarea(attrs={'rows': 3, 'class': 'font1 text-4xl'}),
+        }

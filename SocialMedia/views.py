@@ -29,7 +29,7 @@ class PostCreateForm(ModelForm):
 def postCreated(request):
     form = PostCreateForm()
     if request.method == 'POST':
-        form = PostCreateForm(request.POST, request.FILES)
+        form = PostCreateForm(request.POST,request.FILES)
         if form.is_valid():
             post = form.save()
             return redirect('home')
@@ -46,4 +46,15 @@ def postDelete(request,pk):
 
 def postEdit(request,pk):
     post = Post_models.objects.get(id=pk)
-    return render(request, 'layout/post_edit.html', {'post': post})
+    form = PostEditForm(instance=post)
+    if request.method == 'POST':
+        form = PostEditForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post edited successfully')
+            return redirect('home')
+    context = {
+        'form': form,
+        'post': post,
+    }
+    return render(request, 'layout/post_edit.html', context)
