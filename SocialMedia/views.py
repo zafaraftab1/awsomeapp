@@ -4,6 +4,7 @@ from django import forms
 from SocialMedia.models import *
 from django.forms import ModelForm
 from django.contrib import messages
+from .forms import *
 
 # Create your views here.
 def home(request):
