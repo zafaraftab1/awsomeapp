@@ -58,3 +58,7 @@ def postEdit(request,pk):
         'post': post,
     }
     return render(request, 'layout/post_edit.html', context)
+
+def postPageView(request,pk):
+    post = Post_models.objects.get(id=pk)
+    return render (request,'layout/post_page.html', {'post': post})
