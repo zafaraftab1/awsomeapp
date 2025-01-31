@@ -1,5 +1,5 @@
 from django.forms import ModelForm, forms
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django import forms
 from SocialMedia.models import *
 from django.forms import ModelForm
@@ -36,7 +36,7 @@ def postCreated(request):
     return render(request, 'layout/created_post.html', {'form': form})
 
 def postDelete(request,pk):
-    post = Post_models.objects.get(id=pk)
+    post=get_object_or_404(Post_models,id=pk)
     if request.method == 'POST':
         post.delete()
         messages.success(request, 'Post deleted successfully')
@@ -45,7 +45,7 @@ def postDelete(request,pk):
     #post = Post_models.objects.get(pk=pk)
 
 def postEdit(request,pk):
-    post = Post_models.objects.get(id=pk)
+    post=get_object_or_404(Post_models,id=pk)
     form = PostEditForm(instance=post)
     if request.method == 'POST':
         form = PostEditForm(request.POST, instance=post)
@@ -60,6 +60,7 @@ def postEdit(request,pk):
     return render(request, 'layout/post_edit.html', context)
 
 def postPageView(request,pk):
-    post = Post_models.objects.get(id=pk)
+    #post = Post_models.objects.get(id=pk)
+    post=get_object_or_404(Post_models,id=pk)
     return render (request,'layout/post_page.html', {'post': post})
 
