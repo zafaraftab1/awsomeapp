@@ -7,7 +7,8 @@ class PostCreateForm(ModelForm):
         model = Post_models
         fields = '__all__'
         labels = {
-            'body': 'Captions',  # Correctly label the 'body' field
+            'body': 'Captions',
+            'tags' : 'Category'
         }
         widgets = {
             'body': forms.Textarea(attrs={
@@ -15,15 +16,18 @@ class PostCreateForm(ModelForm):
                 'placeholder': 'Add a caption ...',
                 'class': 'font1 text-4xl',
             }),
+            'tags': forms.CheckboxSelectMultiple(),
         }
 
 class PostEditForm(ModelForm):
     class Meta:
         model = Post_models
-        fields = '__all__'
+        fields = ['title','body', 'tags']
         labels = {
             'body': '',
+            'tags': 'category',
         }
         widgets = {
             'body': forms.Textarea(attrs={'rows': 3, 'class': 'font1 text-4xl'}),
+            'tags': forms.CheckboxSelectMultiple(),
         }

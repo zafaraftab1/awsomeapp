@@ -7,6 +7,7 @@ class Post_models(models.Model):
     title = models.CharField(max_length=120)
     body = models.TextField()
     image = models.ImageField(upload_to='SocialMediaCategory/')
+    tags = models.ManyToManyField('Tags')
     created = models.DateTimeField(auto_now_add=True)
     id = models.CharField(max_length=120,default=uuid.uuid4,editable=False,unique=True,primary_key=True)
 
@@ -15,3 +16,10 @@ class Post_models(models.Model):
 
     class Meta:
        ordering = ['-created']
+
+class Tags(models.Model):
+    name = models.CharField(max_length=120)
+    slug = models.SlugField(max_length=120, unique=True)
+
+    def __str__(self):
+        return self.name
