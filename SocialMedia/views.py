@@ -1,3 +1,5 @@
+from unicodedata import category
+
 from django.forms import ModelForm, forms
 from django.shortcuts import render,redirect,get_object_or_404
 from django import forms
@@ -7,14 +9,29 @@ from django.contrib import messages
 from .forms import *
 
 # Create your views here.
-def home(request):
-    posts=Post_models.objects.all()
-    return render(request, 'myHome/home.html', {'posts': posts})
 
-def category_view(request,tag):
-    posts=Post_models.objects.filter(tags__slug=tag)
-    return render(request, 'myHome/home.html', {'posts': posts})
+#def home(request):
+    #posts=Post_models.objects.all()
+    #return render(request, 'myHome/home.html', {'posts': posts})
 
+#def category_view(request,tag):
+    #posts=Post_models.objects.filter(tags__slug=tag)
+    #return render(request, 'myHome/home.html', {'posts': posts})
+
+def home(request,tag=None):
+    if tag:
+        posts=Post_models.objects.filter(tags__slug=tag)
+        tag= get_object_or_404(Tags,slug=tag)
+    else:
+        posts=Post_models.objects.all()
+    categories= Tags.objects.all()
+
+    context={
+        'posts':posts,
+        'categories':categories,
+        'tag':tag,
+    }
+    return render(request, 'myHome/home.html', context)
 
 
 def postCreated(request):

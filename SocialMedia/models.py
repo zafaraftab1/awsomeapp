@@ -20,6 +20,10 @@ class Post_models(models.Model):
 class Tags(models.Model):
     name = models.CharField(max_length=120)
     slug = models.SlugField(max_length=120, unique=True)
+    order =models.IntegerField(null=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['order']
