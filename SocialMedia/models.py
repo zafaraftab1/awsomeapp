@@ -19,6 +19,7 @@ class Post_models(models.Model):
 
 class Tags(models.Model):
     name = models.CharField(max_length=120)
+    image=models.ImageField(upload_to='icon/',null=True, blank=True)
     slug = models.SlugField(max_length=120, unique=True)
     order =models.IntegerField(null=True)
 
