@@ -43,13 +43,13 @@
                     <ul class="hoverlist [&>li>a]:justify-end">
                         <li><a href="">My Profile</a></li>
                         <li><a href="">Edit Profile</a></li>
-                        <li><a href="">Log Out</a></li>
+                        <li><a href="{% url 'account_logout' %}">Log Out</a></li>
                     </ul>
                 </div>
             </li>
             {% else %}
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'account_login' %}">Login</a></li>
+            <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
             {% endif %}
         </ul>
     </nav>
