@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 
     'allauth',
     'allauth.account',
-    'django.contrib.sites'
+    'django.contrib.sites',
     'allauth.socialaccount',
 ]
 
