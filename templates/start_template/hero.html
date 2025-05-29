@@ -12,7 +12,7 @@
         <h1 class="font1 text-6xl title-fadein">Welcome to my Social Media Posts</h1>
         <p class="text-lg font-bold mb-5">Share your favorite Photos from us and add a great caption</p>
         {% if not user.is_authenticated %}
-        <a class="button" href="">Get Started</a>
+        <a class="button" href="{% url 'account_signup'%}">Get Started</a>
         {% endif %}
     </div>
 </hero>
