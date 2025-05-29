@@ -97,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'SocialMediaClone',
         'USER': 'postgres',
-        'PASSWORD': 'YOUR PASSWORD',
+        'PASSWORD': 'aftab@14581',
         'HOST': 'localhost',
         'PORT': '5432',
     }
