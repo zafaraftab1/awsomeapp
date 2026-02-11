@@ -1,28 +1,56 @@
 SocialMediaClone
 =================
 
-A small Django-based social media clone project (development workspace).
+A Django-based social media clone project intended as a development sandbox and starting point for learning and small prototypes.
 
-Contents
---------
-- Project overview
-- Quick setup and run instructions
-- Common commands
-- Notes about media/static files and templates
+High-level checklist
+--------------------
+- [x] Local development instructions (venv, install, migrate, run)
+- [x] Environment variables and `.env.example`
+- [x] Database options: sqlite3 (dev) and Postgres (prod/dev alternative)
+- [x] Docker Compose example and quick production checklist
+- [x] Testing, linting, and CI suggestions
 
 Project overview
 ----------------
-This repository contains a Django project named `SocialMediaProject` and an app `SocialMedia`. It includes templates, static assets, and a sqlite3 database used for local development. Use this README to get the project running locally for development and testing.
+This repository contains a Django project named `SocialMediaProject` and a main app `SocialMedia`. It includes:
+
+- Django project: `SocialMediaProject/`
+- App: `SocialMedia/`
+- Templates: `templates/`
+- Static assets: `static/`
+- Development media directory: `media/`
+- A bundled `db.sqlite3` for quick local testing (optional)
+
+Tech stack (from `requirements.txt`)
+-----------------------------------
+- Python 3.10+
+- Django 5.2.x
+- Django REST Framework
+- django-allauth (authentication)
+- djangorestframework-simplejwt (JWT tokens)
+- Pillow (image handling)
+- psycopg2 (Postgres client)
 
 Prerequisites
 -------------
-- Python 3.10+ (or a supported 3.x version listed in `requirements.txt`)
+- macOS / Linux / Windows
+- Python 3.10 or newer
 - pip
-- virtualenv or venv
-- (Optional) PostgreSQL/MySQL if you want to switch from the provided sqlite3
+- virtualenv / venv
+- (Optional) Docker & Docker Compose for containerized development
 
-Quick setup (macOS / zsh)
--------------------------
+Environment variables
+---------------------
+Create a file named `.env` in the project root (do not check it into source control). See `.env.example` for the common variables used by this project. Key variables include:
+
+- DJANGO_SECRET_KEY - Django SECRET_KEY for this project
+- DJANGO_DEBUG - 'True' or 'False'
+- DATABASE_URL - (optional) PostgreSQL URL, e.g. `postgres://user:pass@db:5432/dbname`
+- ALLOWED_HOSTS - comma-separated hostnames for production
+
+Local development (recommended)
+-------------------------------
 1. Open a terminal and change into the repository root:
 
 ```bash
@@ -36,67 +64,212 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Install dependencies:
+3. Upgrade pip and install dependencies:
 
 ```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-4. Apply database migrations:
+4. Copy `.env.example` to `.env` and edit values as needed (see `.env.example` for details).
+
+```bash
+cp .env.example .env
+# edit .env with your editor
+```
+
+5. Apply database migrations (sqlite by default unless `DATABASE_URL` points to Postgres):
 
 ```bash
 python manage.py migrate
 ```
 
-5. (Optional) Create a superuser to access the admin:
+6. (Optional) Load initial data or create a superuser:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-6. Run the development server:
+7. Run the development server:
 
 ```bash
 python manage.py runserver
 ```
 
-7. Open http://127.0.0.1:8000/ in your browser.
+8. Open http://127.0.0.1:8000/ in your browser.
 
-Notes about the bundled sqlite database
---------------------------------------
-A `db.sqlite3` file may already be present for convenience in development. If you want a fresh database, remove `db.sqlite3` and rerun migrations.
+Using PostgreSQL locally
+------------------------
+If you prefer Postgres during development, set `DATABASE_URL` in `.env` to something like:
 
-Media and static files
-----------------------
-- Media files are stored under the `media/` directory in the repository root (used for development only).
-- Static files and templates are present in `static/` and `templates/` respectively. In production, configure proper static/media hosting (e.g., S3, CDN).
+```
+postgres://postgres:postgres@localhost:5432/socialdb
+```
 
-Testing
--------
-Run Django tests with:
+Install Postgres locally (e.g., via Homebrew on macOS):
+
+```bash
+brew install postgresql
+brew services start postgresql
+createdb socialdb
+```
+
+Then run migrations as normal:
+
+```bash
+python manage.py migrate
+```
+
+Docker Compose (example, not included as files)
+-----------------------------------------------
+Below is a minimal `docker-compose.yml` and `Dockerfile` outline you can use as a starting point. Add these files to the repo if you want containerized development.
+
+docker-compose.yml (example):
+
+```yaml
+version: '3.8'
+services:
+  web:
+    build: .
+    command: gunicorn SocialMediaProject.wsgi:application --bind 0.0.0.0:8000
+    env_file: .env
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+    volumes:
+      - .:/code
+      - media:/code/media
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: socialdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
+  media:
+```
+
+Dockerfile (example):
+
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /code
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["gunicorn", "SocialMediaProject.wsgi:application", "--bind", "0.0.0.0:8000"]
+```
+
+Production checklist
+--------------------
+- Replace the default `SECRET_KEY` and keep it out of source control (use environment variables or a secrets manager).
+- Set `DJANGO_DEBUG=False` and configure `ALLOWED_HOSTS`.
+- Use a production-ready database (Postgres, MySQL).
+- Configure static/media hosting (S3 or CDN) and run `collectstatic`.
+- Use HTTPS (proxy/load balancer or web server).
+- Configure application server (Gunicorn/uWSGI) + reverse proxy (Nginx).
+- Add monitoring and logging (Sentry, Prometheus, etc.).
+- Run migrations during deploy and keep backups of DB.
+
+Security notes
+--------------
+- Never check `.env` or credentials into the repo.
+- Use strong, unique `SECRET_KEY` and rotate if it leaks.
+- Validate uploaded files and limit size (Pillow is installed for image handling).
+
+Testing and quality
+-------------------
+Run Django tests:
 
 ```bash
 python manage.py test
 ```
 
-Troubleshooting
----------------
-- If you get dependency or import errors, confirm the virtualenv is activated and `pip install -r requirements.txt` completed successfully.
-- If migrations fail, inspect the output and consider running `python manage.py makemigrations` and then `migrate`.
+Linting / formatting suggestions:
 
-Useful commands
----------------
-- Run shell: `python manage.py shell`
-- Collect static (for production staging): `python manage.py collectstatic --noinput`
+```bash
+pip install flake8 black isort
+black .
+flake8
+```
+
+Continuous Integration (CI)
+---------------------------
+A typical CI pipeline should include:
+- Install dependencies
+- Run linters and formatters
+- Run tests
+- Optionally run a minimal static type check (mypy) if you add types
+
+Example GitHub Actions job snippet:
+
+```yaml
+# .github/workflows/ci.yml (example)
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: python manage.py test --verbosity=2
+```
+
+Developer notes and troubleshooting
+----------------------------------
+- If migrations fail: run `python manage.py makemigrations` and inspect the migration files. Keep migrations in source control.
+- If a dependency import error appears, ensure the virtualenv is active and `pip install -r requirements.txt` succeeded.
+- If media files are missing locally, check the `media/` directory — it's included in this repo for convenience.
 
 Contributing
 ------------
-Small contributions and documentation improvements are welcome. Please follow common GitHub/Git practices (feature branch, tests, PR description).
+- Use feature branches and open pull requests.
+- Add tests for new behavior and keep changes small.
+- Document setup changes in this README.
 
-License & contact
------------------
-This project should include a license file if you plan to distribute it. Add `LICENSE` at the repo root and update this section with your preferred license and contact information.
+License
+-------
+Add a `LICENSE` file at the project root and update this section with the chosen license.
 
+Appendix: quick reference commands
+---------------------------------
+- Create virtualenv and activate:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+- Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+- Apply migrations:
+
+```bash
+python manage.py migrate
+```
+
+- Run server:
+
+```bash
+python manage.py runserver
+```
 
 --
-Generated README for local development. Update any paths or commands to match your environment and deployment setup.
+This README has been upgraded with advanced developer and deployment guidance. Update any placeholders (Docker, DATABASE_URL) to match your environment.
